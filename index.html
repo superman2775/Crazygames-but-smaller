@@ -4,11 +4,174 @@
   <meta charset="UTF-8">
   <title>Mini Crazygames</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #20252a; color: #eee; }
-    #menu { margin-bottom: 20px; }
-    button { margin: 5px; }
-    .game { display: none; margin-top: 20px; }
+    :root {
+      --bg: #181a23;
+      --panel: #252842;
+      --accent: #55e2b2;
+      --accent2: #3453da;
+      --text: #f7faff;
+      --button: #222543;
+      --button-hover: #55e2b2;
+      --brad: 12px;
+      --boxshadow: 0 0 32px #4452ba55;
+    }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', 'Verdana', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    h1 {
+      color: var(--accent);
+      letter-spacing: 3px;
+      margin: 36px 0 12px 0;
+      font-size: 2.3em;
+      text-shadow: 1px 2px 18px var(--accent2);
+    }
+    #menu {
+      background: var(--panel);
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 25px 10px 10px 10px;
+      border-radius: var(--brad);
+      box-shadow: var(--boxshadow);
+      margin-bottom: 22px;
+      max-width: 80vw;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #menu button {
+      background: var(--button);
+      color: var(--accent);
+      border: none;
+      font-weight: 600;
+      font-size: 1.1em;
+      padding: 14px 28px;
+      margin: 4px 0;
+      border-radius: 8px;
+      transition: background 0.2s, color 0.2s, box-shadow 0.3s;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #1115;
+      outline: none;
+      letter-spacing: 1px;
+    }
+    #menu button:hover, #menu button:focus {
+      background: var(--accent);
+      color: var(--panel);
+      box-shadow: 0 0 16px var(--accent2);
+    }
+    .game {
+      background: var(--panel);
+      border-radius: var(--brad);
+      padding: 26px 8px 18px 8px;
+      margin: 0 auto 18px auto;
+      box-shadow: var(--boxshadow);
+      display: none;
+      max-width: 400px;
+      min-height: 220px;
+    }
     .active { display: block; }
+    h2 {
+      margin-top: 3px;
+      margin-bottom: 12px;
+      color: var(--accent2);
+      letter-spacing: 2px;
+      font-size: 1.15em;
+      text-shadow: 0 1px 5px var(--accent);
+    }
+    table { border-collapse: collapse; margin: 10px auto; }
+    td, th {
+      background: #222544;
+      color: var(--accent);
+      border: 1px solid #555574;
+      width: 38px; height: 40px;
+      text-align: center;
+      font-size: 1.45em;
+      font-weight: bold;
+      border-radius: 4px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    td:hover { background: var(--accent2); color: var(--panel); }
+    input[type=number] {
+      background: #191a28;
+      color: var(--accent);
+      border: 1px solid var(--accent2);
+      border-radius: 6px;
+      padding: 4px 10px;
+      margin: 0 5px 6px 5px;
+      font-size: 1em;
+      outline: none;
+    }
+    input[type=number]:focus {
+      border-color: var(--accent);
+      background: #222543;
+    }
+    button {
+      background: var(--accent2);
+      color: var(--panel);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin: 5px 3px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.3s;
+      box-shadow: 0 1px 5px #2225;
+      outline: none;
+    }
+    button:hover, button:focus {
+      background: var(--accent);
+      color: var(--panel);
+      box-shadow: 0 0 12px var(--accent);
+    }
+    #snake { border-radius: 10px; box-shadow: 0 2px 12px #0f08; margin-top:12px; }
+
+    /* Memory game cards */
+    .mem-card-btn {
+      background: #222544;
+      color: var(--accent);
+      border-radius: 8px;
+      padding: 0 18px;
+      font-size: 1.23em;
+      border: 2px solid var(--accent2);
+      margin: 3px;
+      font-weight: bold;
+      transition: background .2s, color .2s;
+    }
+    .mem-card-btn:hover { background: var(--accent2); color: var(--panel); }
+
+    /* Simon Says buttons */
+    .simon-btn {
+      display: inline-block;
+      margin: 6px 7px;
+      border-radius: 50%;
+      width: 50px; height: 50px;
+      border: 2px solid #fff;
+      transition: box-shadow 0.2s, border 0.2s;
+      cursor: pointer;
+    }
+    .simon-btn:hover { box-shadow: 0 0 8px #fff; border-color: var(--accent); }
+
+    /* Clicker game button */
+    .clk-btn {
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      color: #fff;
+      border: none;
+      font-size: 1.3em;
+      margin: 7px 0;
+      padding: 13px 36px;
+      border-radius: 13px;
+      box-shadow: 0 3px 16px #1117;
+      transition: background .2s, color .2s;
+      outline: none;
+    }
+    .clk-btn:hover { background: linear-gradient(90deg, var(--accent), var(--accent2)); color: var(--panel);}
   </style>
 </head>
 <body>
@@ -20,35 +183,24 @@
     <button onclick="showGame(3)">Coin Flip</button>
     <button onclick="showGame(4)">Dice Roll</button>
     <button onclick="showGame(5)">Memory</button>
-    <button onclick="showGame(6)">2048 (Simple)</button>
-    <button onclick="showGame(7)">Snake (Simple)</button>
+    <button onclick="showGame(6)">2048</button>
+    <button onclick="showGame(7)">Snake</button>
     <button onclick="showGame(8)">Clicker</button>
     <button onclick="showGame(9)">Simon Says</button>
   </div>
   <div id="games">
-    <!-- Game 0: Tic-Tac-Toe -->
     <div class="game active"><div id="ttt"></div></div>
-    <!-- Game 1: Rock-Paper-Scissors -->
     <div class="game"><div id="rps"></div></div>
-    <!-- Game 2: Guess Number -->
     <div class="game"><div id="gn"></div></div>
-    <!-- Game 3: Coin Flip -->
     <div class="game"><div id="cf"></div></div>
-    <!-- Game 4: Dice Roll -->
     <div class="game"><div id="dr"></div></div>
-    <!-- Game 5: Memory -->
     <div class="game"><div id="mem"></div></div>
-    <!-- Game 6: 2048 (Simple) -->
     <div class="game"><div id="tfe"></div></div>
-    <!-- Game 7: Snake (Simple) -->
     <div class="game"><canvas id="snake" width="200" height="200"></canvas><div id="snmsg"></div></div>
-    <!-- Game 8: Clicker -->
     <div class="game"><div id="clk"></div></div>
-    <!-- Game 9: Simon Says -->
     <div class="game"><div id="simon"></div></div>
   </div>
   <script>
-    // Navigation
     function showGame(idx){
       Array.from(document.querySelectorAll('.game')).forEach((e,i) => e.className = "game"+(i===idx?" active":""));
     }
@@ -66,7 +218,7 @@
       function drawTTT(){
         tttDiv.innerHTML = `<h2>Tic-Tac-Toe</h2><table>${[0,1,2].map(r=>`<tr>${[0,1,2].map(c=>{
           const i = 3*r + c;
-          return `<td style="width:40px;height:40px;text-align:center;font-size:2em;border:1px solid #aaa;cursor:pointer;" onclick="moveTTT(${i})">${board[i]}</td>`;
+          return `<td onclick="moveTTT(${i})">${board[i]}</td>`;
         }).join('')}</tr>`).join('')}</table>
         <div>${won ? board[won[0]] + ' wins!':'Turn: '+turn}</div>
         <button onclick="resetTTT()">Restart</button>`;
@@ -96,9 +248,9 @@
       }
       function drawRPS(msg,ai){
         rpsDiv.innerHTML=`<h2>Rock Paper Scissors</h2>
-          <button onclick="playRPS('Rock')">Rock</button>
-          <button onclick="playRPS('Paper')">Paper</button>
-          <button onclick="playRPS('Scissors')">Scissors</button>
+          <button onclick="playRPS('Rock')">✊ Rock</button>
+          <button onclick="playRPS('Paper')">🖐 Paper</button>
+          <button onclick="playRPS('Scissors')">✌️ Scissors</button>
           <div>${msg||''} ${ai? "(AI chose "+ai+")":''}</div>`;
       }
       window.playRPS=playRPS; drawRPS();
@@ -131,7 +283,7 @@
       const cfDiv=document.getElementById("cf");
       function flipCF(){
         cfDiv.innerHTML=`<h2>Coin Flip</h2><button onclick="flipCF()">Flip</button>
-          <div>${Math.random()<0.5?'Heads':'Tails'}</div>`;
+          <div style="font-size:2em;margin:12px 0;">${Math.random()<0.5?'🪙 Heads':'🪙 Tails'}</div>`;
       }
       window.flipCF=flipCF; flipCF();
     })();
@@ -140,7 +292,7 @@
       const drDiv=document.getElementById("dr");
       function rollDR(){
         drDiv.innerHTML=`<h2>Dice Roll </h2><button onclick="rollDR()">Roll</button>
-          <div>Rolled: ${1+Math.floor(Math.random()*6)}</div>`;
+          <div style="font-size:2em;margin:12px 0;">🎲 ${1+Math.floor(Math.random()*6)}</div>`;
       }
       window.rollDR=rollDR; rollDR();
     })();
@@ -166,9 +318,13 @@
       }
       function drawMEM(){
         memDiv.innerHTML = `<h2>Memory (Match cards)</h2>
-        <div>${cards.map((c,i)=>matched.includes(i)||flipped.includes(i)?`[${c}]`:`<button onclick="flipMEM(${i})">?</button>`).join(' ')}</div>
+        <div style="margin-bottom:12px;">${cards.map((c,i)=>
+          matched.includes(i)||flipped.includes(i)
+            ? `<button disabled class="mem-card-btn" style="background:var(--accent);color:var(--panel);">${c}</button>`
+            :`<button onclick="flipMEM(${i})" class="mem-card-btn">?</button>`
+          ).join(' ')}</div>
         <button onclick="resetMEM()">Restart</button>
-        <div>${matched.length===6?"You win!":""}</div>`;
+        <div style="margin-top:5px;">${matched.length===6?"You win!":""}</div>`;
       }
       window.flipMEM=flipMEM; window.resetMEM=resetMEM; resetMEM();
     })();
@@ -188,11 +344,9 @@
         grid[i][j]=2;
       }
       function moveTFE(d){
-        // Moves: 0-left,1-up,2-right,3-down
-        let g=grid.map(r=>r.slice());
-        let moved=false;
-        for(let k=0;k<2;k++){
-          for(let i=0;i<2;i++){
+        let g=grid.map(r=>r.slice()),moved=false;
+        for(let k=0;k<2;k++)
+          for(let i=0;i<2;i++)
             for(let j=1;j>=0;j--){
               let pi=d<2?i:j,pj=d<2?j:i,ni=pi+([0,-1,0,1][d]),nj=pj+([1,0,-1,0][d]);
               if(ni<0||ni>1||nj<0||nj>1) continue;
@@ -202,19 +356,20 @@
                 moved=true;
               }
             }
-          }
-        }
-        if(moved){grid=g;addTFE();drawTFE();}
+        if(moved){grid=g;addTFE();}
+        drawTFE();
       }
       function drawTFE(){
         tfeDiv.innerHTML = `<h2>2048 (2x2 tiny)</h2>
-        <div>Score: ${score}</div>
-        <table>${grid.map(r=>'<tr>'+r.map(c=>`<td style="width:30px;height:30px;text-align:center;border:1px solid #aaa;font-size:1.5em;">${c?c:''}</td>`).join('')+'</tr>').join('')}</table>
-        <button onclick="moveTFE(0)">Left</button>
-        <button onclick="moveTFE(1)">Up</button>
-        <button onclick="moveTFE(2)">Right</button>
-        <button onclick="moveTFE(3)">Down</button>
-        <button onclick="resetTFE()">Restart</button>`;
+        <div style="margin-bottom:8px;">Score: <span style="color:var(--accent2);font-weight:bold">${score}</span></div>
+        <table>${grid.map(r=>'<tr>'+r.map(c=>`<td>${c?c:''}</td>`).join('')+'</tr>').join('')}</table>
+        <div style="margin-top:10px;">
+          <button onclick="moveTFE(0)">◀️ Left</button>
+          <button onclick="moveTFE(1)">🔼 Up</button>
+          <button onclick="moveTFE(2)">▶️ Right</button>
+          <button onclick="moveTFE(3)">🔽 Down</button>
+          <button onclick="resetTFE()">Restart</button>
+        </div>`;
       }
       window.moveTFE=moveTFE; window.resetTFE=resetTFE; resetTFE();
     })();
@@ -227,12 +382,12 @@
         drawSNAKE();
       }
       function drawSNAKE(){
-        ctx.fillStyle="#222";ctx.fillRect(0,0,200,200);
-        ctx.fillStyle="#0f0";
+        ctx.fillStyle="#181a23";ctx.fillRect(0,0,200,200);
+        ctx.fillStyle="#55e2b2";
         snake.forEach(s=>ctx.fillRect(s[0]*10,s[1]*10,10,10));
-        ctx.fillStyle="#f00";
+        ctx.fillStyle="#3453da";
         ctx.fillRect(food[0]*10,food[1]*10,10,10);
-        msgDiv.innerHTML=gameOver?"Game Over! <button onclick='resetSNAKE()'>Restart</button>":"Use Arrow Keys";
+        msgDiv.innerHTML=gameOver?`<span style="color:var(--accent2);font-weight:bold">Game Over!</span> <button onclick='resetSNAKE()'>Restart</button>`:"Use Arrow Keys";
       }
       function tickSNAKE(){
         if(gameOver) return;
@@ -253,7 +408,7 @@
         if(e.key==="ArrowLeft"&&dir[0]!==1) dir=[-1,0];
         if(e.key==="ArrowRight"&&dir[0]!==-1)dir=[1,0];
       });
-      setInterval(tickSNAKE,180);
+      setInterval(tickSNAKE,170);
       window.resetSNAKE=resetSNAKE;resetSNAKE();
     })();
     // --- Game 8: Clicker ---
@@ -266,9 +421,9 @@
       function resetCLK(){score=0;drawCLK();}
       function drawCLK(){
         clkDiv.innerHTML=`<h2>Clicker Game</h2>
-        <div>Score: ${score}</div>
-        <button onclick="clickCLK()">Click me!</button>
-        <button onclick="resetCLK()">Restart</button>`;
+        <div style="margin-bottom:6px;font-size:1.3em;">Score: <span style="color:var(--accent);font-weight:bold">${score}</span></div>
+        <button class="clk-btn" onclick="clickCLK()">Click me!</button>
+        <br><button onclick="resetCLK()">Restart</button>`;
       }
       window.clickCLK=clickCLK; window.resetCLK=resetCLK; drawCLK();
     })();
@@ -287,16 +442,17 @@
         if(!playing)return;
         user.push(i);
         if(i!==seq[user.length-1]){
-          simonDiv.innerHTML+="<div>Wrong! <button onclick='resetSIMON()'>Restart</button></div>"; playing=false;return;
+          simonDiv.innerHTML+="<div style='color:var(--accent);font-weight:bold;margin-top:11px;'>Wrong! <button onclick='resetSIMON()'>Restart</button></div>"; playing=false;return;
         }
         if(user.length===seq.length){
           setTimeout(startSIMON,600);
         }
       }
       function drawSIMON(){
+        const colors=["#e74c3c","#55e2b2","#3453da","#f5ee5c"];
         simonDiv.innerHTML='<h2>Simon Says</h2>'+
           (playing? 'Repeat the sequence!':'<button onclick="startSIMON()">Start</button><button onclick="resetSIMON()">Restart</button>')+
-          "<div>"+[0,1,2,3].map(i=>`<button style="background:${['red','green','blue','yellow'][i]};width:50px;height:50px;margin:4px;" onclick="pressSIMON(${i})"></button>`).join(' ')+"</div>";
+          "<div>"+[0,1,2,3].map(i=>`<button class="simon-btn" style="background:${colors[i]}" onclick="pressSIMON(${i})"></button>`).join(' ')+"</div>";
       }
       window.resetSIMON=resetSIMON; window.startSIMON=startSIMON; window.pressSIMON=pressSIMON; drawSIMON();
     })();
