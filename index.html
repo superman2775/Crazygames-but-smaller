@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Game Arcade</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #20252a; color: #eee; }
+    #menu { margin-bottom: 20px; }
+    button { margin: 5px; }
+    .game { display: none; margin-top: 20px; }
+    .active { display: block; }
+  </style>
+</head>
+<body>
+  <h1>Mini Game Arcade</h1>
+  <div id="menu">
+    <button onclick="showGame(0)">Tic-Tac-Toe</button>
+    <button onclick="showGame(1)">Rock-Paper-Scissors</button>
+    <button onclick="showGame(2)">Guess Number</button>
+    <button onclick="showGame(3)">Coin Flip</button>
+    <button onclick="showGame(4)">Dice Roll</button>
+    <button onclick="showGame(5)">Memory</button>
+    <button onclick="showGame(6)">2048 (Simple)</button>
+    <button onclick="showGame(7)">Snake (Simple)</button>
+    <button onclick="showGame(8)">Clicker</button>
+    <button onclick="showGame(9)">Simon Says</button>
+  </div>
+  <div id="games">
+    <!-- Game 0: Tic-Tac-Toe -->
+    <div class="game active"><div id="ttt"></div></div>
+    <!-- Game 1: Rock-Paper-Scissors -->
+    <div class="game"><div id="rps"></div></div>
+    <!-- Game 2: Guess Number -->
+    <div class="game"><div id="gn"></div></div>
+    <!-- Game 3: Coin Flip -->
+    <div class="game"><div id="cf"></div></div>
+    <!-- Game 4: Dice Roll -->
+    <div class="game"><div id="dr"></div></div>
+    <!-- Game 5: Memory -->
+    <div class="game"><div id="mem"></div></div>
+    <!-- Game 6: 2048 (Simple) -->
+    <div class="game"><div id="tfe"></div></div>
+    <!-- Game 7: Snake (Simple) -->
+    <div class="game"><canvas id="snake" width="200" height="200"></canvas><div id="snmsg"></div></div>
+    <!-- Game 8: Clicker -->
+    <div class="game"><div id="clk"></div></div>
+    <!-- Game 9: Simon Says -->
+    <div class="game"><div id="simon"></div></div>
+  </div>
+  <script>
+    // Navigation
+    function showGame(idx){
+      Array.from(document.querySelectorAll('.game')).forEach((e,i) => e.className = "game"+(i===idx?" active":""));
+    }
+
+    // --- Game 0: Tic-Tac-Toe ---
+    (function(){
+      const tttDiv = document.getElementById("ttt");
+      let board, turn, won;
+      function resetTTT(){
+        board = Array(9).fill('');
+        turn = "X";
+        won = false;
+        drawTTT();
+      }
+      function drawTTT(){
+        tttDiv.innerHTML = `<h2>Tic-Tac-Toe</h2><table>${[0,1,2].map(r=>`<tr>${[0,1,2].map(c=>{
+          const i = 3*r + c;
+          return `<td style="width:40px;height:40px;text-align:center;font-size:2em;border:1px solid #aaa;cursor:pointer;" onclick="moveTTT(${i})">${board[i]}</td>`;
+        }).join('')}</tr>`).join('')}</table>
+        <div>${won ? board[won[0]] + ' wins!':'Turn: '+turn}</div>
+        <button onclick="resetTTT()">Restart</button>`;
+      }
+      window.moveTTT = function(i){
+        if(board[i]||won) return;
+        board[i]=turn;
+        won = winTTT();
+        turn=turn==="X"?"O":"X";
+        drawTTT();
+      }
+      function winTTT(){
+        return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].find(l=>
+          board[l[0]]&&board[l[0]]===board[l[1]]&&board[l[1]]===board[l[2]]);
+      }
+      window.resetTTT=resetTTT; resetTTT();
+    })();
+    // --- Game 1: Rock-Paper-Scissors ---
+    (function(){
+      const rpsDiv=document.getElementById("rps");
+      function playRPS(user){
+        const opts=["Rock","Paper","Scissors"];
+        const ai=opts[Math.floor(Math.random()*3)];
+        let res = user===ai ? "Draw!":
+          (user==="Rock"&&ai==="Scissors"||user==="Paper"&&ai==="Rock"||user==="Scissors"&&ai==="Paper") ? "You win!":"AI wins!";
+        drawRPS(res,ai);
+      }
+      function drawRPS(msg,ai){
+        rpsDiv.innerHTML=`<h2>Rock Paper Scissors</h2>
+          <button onclick="playRPS('Rock')">Rock</button>
+          <button onclick="playRPS('Paper')">Paper</button>
+          <button onclick="playRPS('Scissors')">Scissors</button>
+          <div>${msg||''} ${ai? "(AI chose "+ai+")":''}</div>`;
+      }
+      window.playRPS=playRPS; drawRPS();
+    })();
+    // --- Game 2: Guess Number ---
+    (function(){
+      const gnDiv=document.getElementById("gn");
+      let number,tries;
+      function resetGN(){
+        number=Math.floor(Math.random()*100)+1; tries=0; drawGN();
+      }
+      function guessGN(){
+        const val = +document.getElementById('gnguess').value;
+        tries++;
+        gnDiv.innerHTML+=`<div>Guess: ${val}</div>`;
+        if(val===number) gnDiv.innerHTML+=`<div>Correct in ${tries} tries!</div>`;
+        else gnDiv.innerHTML+=`<div>${val<number?"Higher":"Lower"}</div>`;
+        drawGN();
+      }
+      function drawGN(){
+        gnDiv.innerHTML=`<h2>Guess My Number (1-100)</h2>
+        <input id="gnguess" type="number" min=1 max=100>
+        <button onclick="guessGN()">Guess</button>
+        <button onclick="resetGN()">Restart</button>`;
+      }
+      window.guessGN=guessGN; window.resetGN=resetGN; resetGN();
+    })();
+    // --- Game 3: Coin Flip ---
+    (function(){
+      const cfDiv=document.getElementById("cf");
+      function flipCF(){
+        cfDiv.innerHTML=`<h2>Coin Flip</h2><button onclick="flipCF()">Flip</button>
+          <div>${Math.random()<0.5?'Heads':'Tails'}</div>`;
+      }
+      window.flipCF=flipCF; flipCF();
+    })();
+    // --- Game 4: Dice Roll ---
+    (function(){
+      const drDiv=document.getElementById("dr");
+      function rollDR(){
+        drDiv.innerHTML=`<h2>Dice Roll </h2><button onclick="rollDR()">Roll</button>
+          <div>Rolled: ${1+Math.floor(Math.random()*6)}</div>`;
+      }
+      window.rollDR=rollDR; rollDR();
+    })();
+    // --- Game 5: Memory (Match 2 Pairs) ---
+    (function(){
+      const memDiv=document.getElementById("mem");
+      let cards=[],flipped=[],matched=[];
+      function resetMEM(){
+        cards = [..."AABBCC"].sort(()=>0.5-Math.random());
+        flipped=[]; matched=[];
+        drawMEM();
+      }
+      function flipMEM(i){
+        if(flipped.length===2||matched.includes(i)||flipped.includes(i)) return;
+        flipped.push(i); drawMEM();
+        if(flipped.length===2){
+          setTimeout(()=>{
+            if(cards[flipped[0]]===cards[flipped[1]]) matched.push(...flipped);
+            flipped=[];
+            drawMEM();
+          },700);
+        }
+      }
+      function drawMEM(){
+        memDiv.innerHTML = `<h2>Memory (Match cards)</h2>
+        <div>${cards.map((c,i)=>matched.includes(i)||flipped.includes(i)?`[${c}]`:`<button onclick="flipMEM(${i})">?</button>`).join(' ')}</div>
+        <button onclick="resetMEM()">Restart</button>
+        <div>${matched.length===6?"You win!":""}</div>`;
+      }
+      window.flipMEM=flipMEM; window.resetMEM=resetMEM; resetMEM();
+    })();
+    // --- Game 6: 2048 (Tiny 2x2 grid) ---
+    (function(){
+      const tfeDiv=document.getElementById("tfe");
+      let grid,score;
+      function resetTFE(){
+        grid=[[0,0],[0,0]]; score=0;
+        addTFE(); addTFE(); drawTFE();
+      }
+      function addTFE(){
+        let spots=[];
+        grid.forEach((r,i)=>r.forEach((c,j)=>{if(!c)spots.push([i,j]);}));
+        if(!spots.length)return;
+        let [i,j]=spots[Math.floor(Math.random()*spots.length)];
+        grid[i][j]=2;
+      }
+      function moveTFE(d){
+        // Moves: 0-left,1-up,2-right,3-down
+        let g=grid.map(r=>r.slice());
+        let moved=false;
+        for(let k=0;k<2;k++){
+          for(let i=0;i<2;i++){
+            for(let j=1;j>=0;j--){
+              let pi=d<2?i:j,pj=d<2?j:i,ni=pi+([0,-1,0,1][d]),nj=pj+([1,0,-1,0][d]);
+              if(ni<0||ni>1||nj<0||nj>1) continue;
+              if(g[pi][pj]&&(!g[ni][nj]||g[ni][nj]===g[pi][pj])){
+                if(g[ni][nj]===g[pi][pj]){score+=g[pi][pj]*2; g[ni][nj]*=2; g[pi][pj]=0;}
+                else {g[ni][nj]=g[pi][pj]; g[pi][pj]=0;}
+                moved=true;
+              }
+            }
+          }
+        }
+        if(moved){grid=g;addTFE();drawTFE();}
+      }
+      function drawTFE(){
+        tfeDiv.innerHTML = `<h2>2048 (2x2 tiny)</h2>
+        <div>Score: ${score}</div>
+        <table>${grid.map(r=>'<tr>'+r.map(c=>`<td style="width:30px;height:30px;text-align:center;border:1px solid #aaa;font-size:1.5em;">${c?c:''}</td>`).join('')+'</tr>').join('')}</table>
+        <button onclick="moveTFE(0)">Left</button>
+        <button onclick="moveTFE(1)">Up</button>
+        <button onclick="moveTFE(2)">Right</button>
+        <button onclick="moveTFE(3)">Down</button>
+        <button onclick="resetTFE()">Restart</button>`;
+      }
+      window.moveTFE=moveTFE; window.resetTFE=resetTFE; resetTFE();
+    })();
+    // --- Game 7: Snake (very basic) ---
+    (function(){
+      const canvas=document.getElementById("snake"),ctx=canvas.getContext("2d"),msgDiv=document.getElementById("snmsg");
+      let snake,dir,food,gameOver;
+      function resetSNAKE(){
+        snake=[[5,5]],dir=[1,0],food=[8,8],gameOver=false;
+        drawSNAKE();
+      }
+      function drawSNAKE(){
+        ctx.fillStyle="#222";ctx.fillRect(0,0,200,200);
+        ctx.fillStyle="#0f0";
+        snake.forEach(s=>ctx.fillRect(s[0]*10,s[1]*10,10,10));
+        ctx.fillStyle="#f00";
+        ctx.fillRect(food[0]*10,food[1]*10,10,10);
+        msgDiv.innerHTML=gameOver?"Game Over! <button onclick='resetSNAKE()'>Restart</button>":"Use Arrow Keys";
+      }
+      function tickSNAKE(){
+        if(gameOver) return;
+        let head=[snake[0][0]+dir[0], snake[0][1]+dir[1]];
+        if(head[0]<0||head[1]<0||head[0]>19||head[1]>19||snake.some(s=>s[0]===head[0]&&s[1]===head[1])){
+          gameOver=true;drawSNAKE();return;
+        }
+        snake.unshift(head);
+        if(head[0]===food[0]&&head[1]===food[1]){
+          food=[Math.floor(Math.random()*20),Math.floor(Math.random()*20)];
+        }else snake.pop();
+        drawSNAKE();
+      }
+      document.addEventListener("keydown",e=>{
+        if(!canvas.parentElement.classList.contains("active"))return;
+        if(e.key==="ArrowUp"&&dir[1]!==1) dir=[0,-1];
+        if(e.key==="ArrowDown"&&dir[1]!==-1)dir=[0,1];
+        if(e.key==="ArrowLeft"&&dir[0]!==1) dir=[-1,0];
+        if(e.key==="ArrowRight"&&dir[0]!==-1)dir=[1,0];
+      });
+      setInterval(tickSNAKE,180);
+      window.resetSNAKE=resetSNAKE;resetSNAKE();
+    })();
+    // --- Game 8: Clicker ---
+    (function(){
+      const clkDiv=document.getElementById("clk");
+      let score=0;
+      function clickCLK(){
+        score++; drawCLK();
+      }
+      function resetCLK(){score=0;drawCLK();}
+      function drawCLK(){
+        clkDiv.innerHTML=`<h2>Clicker Game</h2>
+        <div>Score: ${score}</div>
+        <button onclick="clickCLK()">Click me!</button>
+        <button onclick="resetCLK()">Restart</button>`;
+      }
+      window.clickCLK=clickCLK; window.resetCLK=resetCLK; drawCLK();
+    })();
+    // --- Game 9: Simon Says (brief/trivial version) ---
+    (function(){
+      const simonDiv=document.getElementById("simon");
+      let seq=[],user=[],idx=0,playing=false;
+      function resetSIMON(){
+        seq=[]; user=[]; idx=0; playing=false; drawSIMON();
+      }
+      function startSIMON(){
+        seq.push(Math.floor(Math.random()*4));
+        user=[]; idx=0; playing=true; drawSIMON();
+      }
+      function pressSIMON(i){
+        if(!playing)return;
+        user.push(i);
+        if(i!==seq[user.length-1]){
+          simonDiv.innerHTML+="<div>Wrong! <button onclick='resetSIMON()'>Restart</button></div>"; playing=false;return;
+        }
+        if(user.length===seq.length){
+          setTimeout(startSIMON,600);
+        }
+      }
+      function drawSIMON(){
+        simonDiv.innerHTML='<h2>Simon Says</h2>'+
+          (playing? 'Repeat the sequence!':'<button onclick="startSIMON()">Start</button><button onclick="resetSIMON()">Restart</button>')+
+          "<div>"+[0,1,2,3].map(i=>`<button style="background:${['red','green','blue','yellow'][i]};width:50px;height:50px;margin:4px;" onclick="pressSIMON(${i})"></button>`).join(' ')+"</div>";
+      }
+      window.resetSIMON=resetSIMON; window.startSIMON=startSIMON; window.pressSIMON=pressSIMON; drawSIMON();
+    })();
+  </script>
+</body>
+</html>
